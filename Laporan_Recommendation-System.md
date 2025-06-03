@@ -85,20 +85,20 @@ Dataset terdiri dari dua file utama:
 
 ### Visualisasi Distribusi Data Rating
 
-![Distribusi](.Image/Barchart.png)
+![Distribusi](/Image/Barchart.png)
 
 Visualisasi distribusi data rating ini menyajikan gambaran komprehensif mengenai perilaku pengguna, yang terbagi menjadi dua pola utama. Pertama, lonjakan frekuensi yang sangat signifikan pada rating -1 menunjukkan bahwa sebagian besar interaksi adalah catatan 'telah ditonton' tanpa disertai skor numerik. Ini merupakan sinyal ketertarikan yang sangat berharga meskipun tanpa adanya penilaian angka. Kedua, untuk data rating yang memiliki skor (skala 1-10), distribusinya sangat condong ke kiri, dengan mayoritas pengguna memberikan rating tinggi seperti 7, 8, 9, dan 10. Hal ini menandakan adanya bias positif yang kuat, di mana pengguna cenderung hanya memberikan penilaian pada anime yang mereka nikmati. Distribusi yang unik ini memiliki implikasi penting bagi sistem rekomendasi yang akan dibangun: model tidak hanya harus mampu menangani bias penilaian positif ini, tetapi juga harus bisa memanfaatkan data dari pengguna yang menandai anime sebagai 'telah ditonton' (rating -1) untuk menghasilkan rekomendasi yang lebih akurat dan personal.
 
 ### Visualisasi Histogram Data Rating
 
-![Histogram](.Image/Histo.png)
+![Histogram](/Image/Histo.png)
 Histogram di atas menunjukkan distribusi rating pengguna yang memiliki dua pola yang sangat jelas.
 Pertama, terdapat lonjakan frekuensi yang sangat tinggi pada rating -1 (ditampilkan di dekat angka 0). Ini menandakan bahwa sebagian besar data adalah catatan anime yang telah ditonton oleh pengguna tetapi tidak diberi skor (umpan balik implisit).
 Kedua, untuk rating sebenarnya (skala 1-10), distribusi sangat condong ke arah nilai tinggi (7, 8, 9, dan 10). Hal ini menunjukkan bahwa pengguna cenderung memberikan ulasan positif pada anime yang mereka putuskan untuk dinilai, sementara rating rendah sangat jarang diberikan.
 
 ### Visualisasi Boxplot Data Rating
 
-![Boxplot](.Image/Boxplot.png)
+![Boxplot](/Image/Boxplot.png)
 
 Boxplot di atas memberikan ringkasan statistik dari distribusi data rating, yang memperkuat temuan dari histogram sebelumnya. Visualisasi ini secara efektif menunjukkan pemusatan, sebaran, dan adanya nilai-nilai ekstrem (outlier) dalam data. Analisis Komponen Boxplot:
 
@@ -289,9 +289,10 @@ $$
 
 2.  **Mean Absolute Error (MAE)**: Menghitung rata-rata dari nilai absolut selisih antara rating aktual dan prediksi. MAE memberikan gambaran intuitif mengenai rata-rata kesalahan prediksi. Nilai MAE yang lebih rendah adalah lebih baik.
     **Rumus**:
-    $$
-    MAE = \frac{1}{n} \sum_{i=1}^{n} \left| y_i - \hat{y}_i \right|
-    $$
+
+$$
+MAE = \frac{1}{n} \sum_{i=1}^{n} \left| y_i - \hat{y}_i \right|
+$$
 
 ---
 
@@ -306,7 +307,7 @@ Berikut adalah hasil perbandingan performa kedua model pada data validasi berdas
 
 #### Scatterplot : Actual Rating vs Predicted Rating
 
-![Scatterplot](.Image/Scatterplot.png)
+![Scatterplot](/Image/Scatterplot.png)
 
 Kedua scatter plot ini menyajikan perbandingan visual secara langsung antara akurasi model RecommenderNet dan NeuMF. Sumbu-x merepresentasikan rating aktual yang diberikan pengguna, sementara sumbu-y adalah nilai yang diprediksi oleh model. Garis diagonal merah berfungsi sebagai acuan prediksi yang sempurna; semakin rapat sebaran titik-titik data di sekitar garis ini, semakin baik performa model. Pola vertikal yang terlihat pada plot juga menunjukkan bahwa untuk setiap tingkatan rating asli, model memberikan rentang prediksi yang terkonsentrasi di sekitarnya, yang merupakan perilaku yang diharapkan dari sebuah model regresi.
 
