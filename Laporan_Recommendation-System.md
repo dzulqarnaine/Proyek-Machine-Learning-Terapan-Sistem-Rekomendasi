@@ -55,7 +55,7 @@ Lebih jauh lagi, implementasi sistem rekomendasi yang efektif membawa manfaat st
 
 ---
 
-Dataset yang digunakan mengandung beberapa informasi penting mengenai anime yang akan digunakan untuk mengembangkan sistem rekomendasi. Dataset ini dapat diakses oleh publik melalui laman [kaggle](https://www.kaggle.com/datasets/CooperUnion/anime-recommendations-database/data) dan merupakan kompilasi data preferensi dari 73.516 pengguna terhadap 12.294 judul anime.
+Dataset yang digunakan mengandung beberapa informasi penting mengenai anime yang akan digunakan untuk mengembangkan sistem rekomendasi. Dataset ini dapat diakses oleh publik melalui laman [kaggle](https://www.kaggle.com/datasets/CooperUnion/anime-recommendations-database/data) dan merupakan kompilasi data preferensi dari 7.813.737 pengguna.
 
 Dataset terdiri dari dua file utama:
 
@@ -80,8 +80,8 @@ Dataset terdiri dari dua file utama:
 
 ### Kondisi Data
 
-- **Tidak ada data kosong (missing values)**: Setiap kolom dalam dataset terisi dengan lengkap, sehingga tidak ada data yang hilang dan siap untuk diproses lebih lanjut tanpa perlu penanganan nilai yang hilang.
-- **Tidak ada duplikat**: Data yang ada sudah bersih dari entri yang sama atau duplikat, sehingga analisis dan pembuatan model tidak terganggu oleh entri yang berulang.
+- **Terdapat data kosong (missing values)**: Setiap kolom dalam dataset terisi dengan lengkap, sehingga tidak ada data yang hilang dan siap untuk diproses lebih lanjut tanpa perlu penanganan nilai yang hilang.
+- **Tedapat duplikat**: Terdapat satu baris data duplikat sehingga perlu ditanggani dengan cara menghapusnya, sehingga analisis dan pembuatan model tidak terganggu oleh entri yang berulang.
 
 ### Visualisasi Distribusi Data Rating
 
@@ -119,7 +119,10 @@ Boxplot di atas memberikan ringkasan statistik dari distribusi data rating, yang
 Sebelum data dapat digunakan untuk melatih model, serangkaian langkah persiapan data dilakukan untuk memastikan kualitas data, mengoptimalkan proses komputasi, dan membentuk data ke dalam format yang sesuai untuk model deep learning.
 Beberapa langkah data preparation yang dilakukan antara lain:
 
-1. Preprocessing dan Filtering (Langkah Optimasi)
+1. Menghapus data duplikat.
+   Data duplikat perlu dihapus agar model yang dihasilkan lebih akurat.
+
+2. Preprocessing dan Filtering (Langkah Optimasi)
    Mengingat ukuran dataset asli yang sangat besar (lebih dari 7 juta baris rating), langkah pertama yang krusial adalah melakukan filtering untuk mengurangi beban komputasi dan memfokuskan model pada data yang paling informatif.
 
    - Fokus pada Rating Eksplisit: Data dengan rating = -1, yang menandakan pengguna telah menonton anime tanpa memberikan skor, dihapus. Langkah ini bertujuan agar model fokus mempelajari cara memprediksi rating numerik (skala 1-10).
@@ -128,12 +131,12 @@ Beberapa langkah data preparation yang dilakukan antara lain:
      - Anime yang telah menerima minimal 50 rating.
        Strategi ini secara drastis mengurangi ukuran dataset ke tingkat yang lebih mudah dikelola, sekaligus menghilangkan noise dari pengguna yang tidak aktif atau anime yang kurang populer.
 
-2. Encoding
+3. Encoding
    Setelah proses filtering, ID pengguna (user_id) dan ID anime (anime_id) yang tersisa diubah menjadi representasi numerik berbasis indeks (misalnya, mulai dari 0). Kolom baru user dan anime ditambahkan ke dalam dataframe untuk menyimpan hasil encoding ini. Proses ini penting agar model dapat memproses ID sebagai fitur kategorikal numerik.
 
-3. Normalisasi
+4. Normalisasi
    Kolom rating pada data yang telah difilter kemudian dinormalisasi menggunakan teknik Min-Max Scaling. Nilai rating asli diubah skalanya sehingga berada dalam rentang antara 0 dan 1. Hasil normalisasi ini disimpan dalam kolom baru rating_norm dan digunakan sebagai target prediksi (label) untuk model. Normalisasi membantu mempercepat konvergensi selama proses training.
-4. Split Dataset
+5. Split Dataset
    Terakhir, dataset yang bersih dan telah diproses ini diacak secara acak, kemudian dibagi menjadi data latih (80%) dan data validasi (20%). Model akan dilatih pada data latih, dan performanya akan dievaluasi pada data validasi untuk memastikan kemampuan generalisasinya pada data yang belum pernah dilihat sebelumnya.
 
 ## Modeling
@@ -259,18 +262,19 @@ Perbedaan utama terletak pada **tingkat konsentrasi rekomendasi**. Model **NeuMF
 
 Meskipun demikian, jika kita kembali pada hasil evaluasi kuantitatif, nilai **RMSE dan MAE yang lebih rendah pada RecommenderNet** menunjukkan bahwa akurasi prediksinya secara umum lebih unggul. Walaupun rekomendasi NeuMF terlihat sangat spesifik, RecommenderNet terbukti lebih andal dalam memprediksi rating secara akurat. Oleh karena itu, untuk tujuan prediksi rating, **RecommenderNet tetap menjadi model yang lebih disarankan** dalam studi kasus ini.
 
-|  Rank  | **RecommenderNet**                                | Predicted Rating | **NeuMF**                                         | Predicted Rating |
-| :----: | :------------------------------------------------ | :--------------: | :------------------------------------------------ | :--------------: |
-| **1**  | Ginga Eiyuu Densetsu                              |       9.63       | Gintama°                                          |       9.87       |
-| **2**  | Gintama°                                          |       9.50       | Hunter x Hunter (2011)                            |       9.82       |
-| **3**  | Kimi no Na wa.                                    |       9.37       | Ginga Eiyuu Densetsu                              |       9.82       |
-| **4**  | Gintama'                                          |       9.28       | Gintama                                           |       9.80       |
-| **5**  | Steins;Gate                                       |       9.27       | Gintama'                                          |       9.80       |
-| **6**  | Gintama': Enchousen                               |       9.25       | Gintama': Enchousen                               |       9.78       |
-| **7**  | Hunter x Hunter (2011)                            |       9.24       | Gintama Movie: Kanketsu-hen - Yorozuya yo Eien... |       9.72       |
-| **8**  | Gintama                                           |       9.24       | Haikyuu!!: Karasuno Koukou VS Shiratorizawa Ga... |       9.69       |
-| **9**  | Gintama Movie: Kanketsu-hen - Yorozuya yo Eien... |       9.24       | Hajime no Ippo                                    |       9.66       |
-| **10** | Haikyuu!!: Karasuno Koukou VS Shiratorizawa Ga... |       9.19       | Steins;Gate                                       |       9.64       |
+| Rank | **RecommenderNet Name**                           | genre                                             | RecommenderNet Rating | **NeuMF Name**                                    | NeuMF Rating |
+| ---- | ------------------------------------------------- | ------------------------------------------------- | --------------------- | ------------------------------------------------- | ------------ |
+| 1    | Gintama°                                          | Action, Comedy, Historical, Parody, Samurai, S... | 9.394445              | Gintama°                                          | 9.642725     |
+| 2    | Ginga Eiyuu Densetsu                              | Drama, Military, Sci-Fi, Space                    | 9.311150              | Code Geass: Hangyaku no Lelouch R2                | 9.629304     |
+| 3    | Steins;Gate                                       | Sci-Fi, Thriller                                  | 9.189384              | Code Geass: Hangyaku no Lelouch                   | 9.498692     |
+| 4    | Kimi no Na wa.                                    | Drama, Romance, School, Supernatural              | 9.180033              | Steins;Gate                                       | 9.480914     |
+| 5    | Hunter x Hunter (2011)                            | Action, Adventure, Shounen, Super Power           | 9.172791              | Gintama'                                          | 9.470823     |
+| 6    | Gintama'                                          | Action, Comedy, Historical, Parody, Samurai, S... | 9.150453              | Gintama                                           | 9.459053     |
+| 7    | Gintama                                           | Action, Comedy, Historical, Parody, Samurai, S... | 9.093317              | Hunter x Hunter (2011)                            | 9.417157     |
+| 8    | Code Geass: Hangyaku no Lelouch R2                | Action, Drama, Mecha, Military, Sci-Fi, Super...  | 9.076683              | Gintama' : Enchousen                              | 9.391961     |
+| 9    | Gintama Movie: Kanketsu-hen - Yorozuya yo Eien... | Action, Comedy, Historical, Parody, Samurai, S... | 9.032599              | Kimi no Na wa.                                    | 9.377623     |
+| 10   | Gintama' : Enchousen                              | Action, Comedy, Historical, Parody, Samurai, S... | 9.017328              | Gintama Movie: Kanketsu-hen - Yorozuya yo Eien... | 9.354877     |
+| 9.64 |
 
 ---
 
@@ -302,8 +306,8 @@ Berikut adalah hasil perbandingan performa kedua model pada data validasi berdas
 
 | Metrik   | RecommenderNet (Baseline) | **NeuMF (Deep Learning)** |
 | :------- | :------------------------ | :------------------------ |
-| **RMSE** | 1.1789                    | **1.1185**                |
-| **MAE**  | 0.8922                    | **0.8409**                |
+| **RMSE** | 1.146903                  | 1.152114                  |
+| **MAE**  | 0.874188                  | 0.875410                  |
 
 #### Scatterplot : Actual Rating vs Predicted Rating
 
